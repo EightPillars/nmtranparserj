@@ -1,6 +1,5 @@
 package com.uk.eightpillars.lang.nmtran;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.junit.After;
 import org.junit.Before;
