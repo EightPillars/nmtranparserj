@@ -1,5 +1,8 @@
-package com.uk.eightpillars.lang;
+package com.uk.eightpillars.lang.nmtran;
 
+import com.uk.eightpillars.lang.nmtran.NmtranLexer;
+import com.uk.eightpillars.lang.nmtran.NmtranParser;
+import com.uk.eightpillars.lang.nmtran.NmtranParserBaseListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -10,8 +13,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -27,7 +32,7 @@ public class NmTranParsingTest {
                 { "UseCase1_focei.ctl", Boolean.TRUE },
                 { "test_example.ctl", Boolean.TRUE },
                 { "warf_allomCL.ctl", Boolean.TRUE },
-                { "Executable_Simulated_Dupilumab.ctl", Boolean.FALSE }
+                { "Executable_Simulated_Dupilumab.ctl", Boolean.TRUE }
         });
     }
 
@@ -37,24 +42,26 @@ public class NmTranParsingTest {
     @Parameterized.Parameter(1)
     public Boolean expectValid;
 
-//    public NmTranParsingTest(String file, Boolean expectation){
-//        nmTranFile = file;
-//        expectValid = expectation;
-//    }
-
     @Test
     public void test() throws IOException {
-        try(InputStream in = this.getClass().getResourceAsStream("/" + nmTranFile)){
-            CharStream input = CharStreams.fromStream(in);
+        Path tmpFile = Files.createTempFile("nmTranProcess", ".ctl");
+        try(BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/" + nmTranFile)))){
+            try(BufferedWriter out = Files.newBufferedWriter(tmpFile, StandardOpenOption.CREATE)) {
+                NmtranPreprocessor preprocessor = new NmtranPreprocessor();
+                preprocessor.preprocess(in, out);
+            }
+            CharStream input = CharStreams.fromPath(tmpFile);
+            // Use case insensitive lexer
+            CaseChangingCharStream upper = new CaseChangingCharStream(input, true);
             TestErrorListener errorListener = new TestErrorListener();
-            NmtranLexer lexer = new NmtranLexer(input);
+            NmtranLexer lexer = new NmtranLexer(upper);
             // suppress error messages from default error handlers
             lexer.removeErrorListeners();
             // add out test handler to count errors
             lexer.addErrorListener(errorListener);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             NmtranParser parser = new NmtranParser(tokens);
-            parser.removeErrorListeners();
+//            parser.removeErrorListeners();
             parser.addErrorListener(errorListener);
             ParseTree tree = parser.nmModel();
             ParseTreeWalker walker = new ParseTreeWalker();
@@ -64,6 +71,10 @@ public class NmTranParsingTest {
             assertTrue("validity expectation", expectValid != errorListener.isErrorDetected());
 //            System.out.println(list.toString());
 //            System.out.println(tree.toStringTree(parser));
+        }
+        finally{
+//            System.err.println(tmpFile);
+            Files.deleteIfExists(tmpFile);
         }
 
     }

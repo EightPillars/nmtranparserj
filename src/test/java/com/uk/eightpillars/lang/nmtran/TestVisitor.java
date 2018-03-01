@@ -1,5 +1,7 @@
-package com.uk.eightpillars.lang;
+package com.uk.eightpillars.lang.nmtran;
 
+import com.uk.eightpillars.lang.nmtran.NmtranParser;
+import com.uk.eightpillars.lang.nmtran.NmtranParserBaseListener;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 

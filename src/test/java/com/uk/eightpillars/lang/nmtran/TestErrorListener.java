@@ -1,4 +1,4 @@
-package com.uk.eightpillars.lang;
+package com.uk.eightpillars.lang.nmtran;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;

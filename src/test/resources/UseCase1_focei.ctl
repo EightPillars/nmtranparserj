@@ -5,7 +5,7 @@
 ; Model Name: Generated from MDL. MOG ID: outputMog
 ; Dated 	: Thu Dec 07 13:46:54 GMT 2017
 
-$PROBLEM Generated from MDL. MOG ID: outputMog
+$problem Generated from MDL. MOG ID: outputMog
 
 $INPUT  ID TIME WT=DROP AMT DVID DV MDV LOGTWT
 $DATA warfarin_conc.csv IGNORE=@
@@ -51,11 +51,11 @@ A_0(2) = 0
 
 $DES 
 GUT_DES = A(1)
-CENTRAL_DES = A(2)
+central_des = A(2)
 RATEIN_DES = 0 
-IF (T.GE.TLAG) THEN
+if (T.GE.TLAG) THEN
 	RATEIN_DES = (GUT_DES*KA) 
-ENDIF
+ENdIF
 CC_DES = (CENTRAL_DES/V)
 DADT(1) = -(RATEIN_DES)
 DADT(2) = (RATEIN_DES-((CL*CENTRAL_DES)/V))

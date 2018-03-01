@@ -4,24 +4,21 @@ options { tokenVocab=NmtranLexer; }
 nmModel :
 	EOL*
 //	nmHeaderBlock
-    (nmProbBlock|
-    nmDataSource|
+    (
 	nmOptionBlock|
 	nmThetaBlock|
 	nmMatrixBlock|
-	nmStmtBlock)*
+	nmStmtBlock
+	)*
 	;
 
-nmProbBlock: PROB_BLOCK RAW_PROB_STR EOL*;
+//nmProbBlock: STRING EOL*;
 
-nmDataSource:   DATA_BLOCK RAW_STRING (nmIgnore|nmOption)* EOL+;
-
-nmIgnore: ID (ASSIGN IGNORE_CHAR)? ;
+//nmDataSource:   DATA_BLOCK STRING nmOption* EOL+;
 
 nmOption:	(ID (ASSIGN expression)?
             | ID '(' expression ')'
 			| stringLiteral
-			| FILE RAW_ASSIGN RAW_STRING
 			| nmCompDefn) EOL*
 ;
 
