@@ -10,7 +10,7 @@ PLUS: '+';
 
 MINUS: '-';
 
-POW: '^';
+POW: '^'|'**';
 
 EOL: NEWLINE;
 
@@ -44,7 +44,9 @@ LPAREN: '(';
 
 RPAREN: ')';
 
-DATA_BLOCK: '$DATA' -> pushMode(RAW_STRINGS);
+COLON:  ':';
+
+DATA_BLOCK: '$' ('DATA'|'MSFI') -> pushMode(RAW_STRINGS);
 
 PROB_BLOCK: '$'('PRO'|'PROB'|'PROBL'|'PROBLE'|'PROBLEM') -> pushMode(PROB_STRING) ;
 
@@ -52,11 +54,11 @@ THETA_BLOCK: '$THETA';
 
 MATRIX_BLOCK: '$' ('OMEGA'|'SIGMA');
 
-IGNORE: 'IGNORE' -> pushMode(RAW_STRINGS);
+//IGNORE: 'IGNORE' -> pushMode(RAW_STRINGS);
 
 FILE: 'FILE' -> pushMode(RAW_STRINGS);
 
-OPTION_BLOCK_NAME :	'$' ('INPUT'|'SUBS'|'EST'|'TABLE'|'COV'|'SUBR'|'MODEL');
+OPTION_BLOCK_NAME :	'$' ('INPUT'|'SUBS'|'EST'|'TABLE'|'COV'|'SUBR'|'MODEL'|'SIZES');
 
 STMT_BLOCK_NAME: '$' ('PK'|'DES'|'ERROR');
 
@@ -69,6 +71,8 @@ DADT:   'DADT';
 //BLOCK_NAME :	'$' ID;
 
 ID:  (('a'..'z')|('A'..'Z')) (('a'..'z')|('A'..'Z')|('0'..'9')|'_')*;
+
+IGNORE_CHAR: '£'|'#'|'@';
 
 SL_COMMENT:	';' ~('\n'|'\r')* -> skip ;
 

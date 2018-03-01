@@ -14,7 +14,9 @@ nmModel :
 
 nmProbBlock: PROB_BLOCK RAW_PROB_STR EOL*;
 
-nmDataSource:   DATA_BLOCK RAW_STRING IGNORE RAW_ASSIGN RAW_STRING EOL+;
+nmDataSource:   DATA_BLOCK RAW_STRING (nmIgnore|nmOption)* EOL+;
+
+nmIgnore: ID (ASSIGN IGNORE_CHAR)? ;
 
 nmOption:	(ID (ASSIGN expression)?
             | ID '(' expression ')'
@@ -54,18 +56,18 @@ nmOdeDefn:
 ;
 
 nmLimit :
-	 (('(' realLiteral ((',' realLiteral ((',' lower = realLiteral)|',')? )|',')? ')' ID?)
-			|  '(' (realLiteral  ID) ')'
-			|  (realLiteral  ID) ) EOL+
+	 (('(' expression ((','? expression ((','? expression)|',')? )|',')? ')' ID?)
+			|  '(' (expression  ID) ')'
+			|  (expression  ID) ) EOL+
 ;
 
 nmMatrix:
-    (realLiteral+ ID*
-    | '(' realLiteral+ ID* ')' ) EOL+
+    (expression+ ID*
+    | '(' expression+ ID* ')' ) EOL+
     ;
 
 nmCompDefn :
-	 COMP '(' ID ID? ')' //( ASSIGN expression)?
+	 COMP ('(' ID ID? ')')? ( ASSIGN expression)?
 ;
 
 
@@ -73,35 +75,38 @@ expression: orexpression
 ;
 
 orexpression :
-	andexpression (({Orexpression.current} OR) andexpression)*;
+	andexpression ( OR andexpression)*;
 
 
 andexpression :
-	equalityexpression (({Andexpression.current} AND) equalityexpression)*;
+	equalityexpression ( AND equalityexpression)*;
 
 
 equalityexpression :
-	relationalexpression (({Equalityexpression.current} (EQ | NE))
+	relationalexpression ( (EQ | NE)
 	relationalexpression)*;
 
 
 relationalexpression :
-	additiveexpression
+	rangeExpression
 	(
-	 ({Relationalexpression.current} (GE | LE | GT | LT)) additiveexpression)*;
+	 (GE | LE | GT | LT) rangeExpression)*;
 
+
+rangeExpression:  additiveexpression (COLON additiveexpression)*
+                ;
 
 additiveexpression :
-					multiplicativeexpression ({Additiveexpression.current} ('+'|'-') multiplicativeexpression)*
+					multiplicativeexpression ( (PLUS|MINUS) multiplicativeexpression)*
 ;
 
 multiplicativeexpression :
-					powerexpression ({Multiplicativeexpression.current} ('*'|'/') powerexpression)*
+					powerexpression ((MUL|DIV) powerexpression)*
 ;
 
 
 powerexpression :
-					unaryexpression ({Powerexpression.current} ('^') unaryexpression)*
+					unaryexpression (POW unaryexpression)*
 ;
 
 unaryexpression :
@@ -122,7 +127,6 @@ primaryexpression :
 		parenthesis //|
 //		SpecialVars
 ;
-
 
 nmCondStmt :
 	IF '(' expression ')' THEN EOL+ nmStatement+ (ELSE EOL+ nmStatement+ )? ENDIF
