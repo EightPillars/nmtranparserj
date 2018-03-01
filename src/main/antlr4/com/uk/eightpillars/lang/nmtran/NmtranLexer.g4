@@ -20,6 +20,8 @@ THEN: 'THEN';
 
 ELSE: 'ELSE';
 
+END: 'END';
+
 ENDIF: 'ENDIF';
 
 EQ: '.EQ.'|'==';
@@ -54,9 +56,9 @@ MATRIX_BLOCK: '$' ('OMEGA'|'SIGMA');
 
 //FILE: 'FILE' -> pushMode(RAW_STRINGS);
 
-OPTION_BLOCK_NAME :	'$' ('INP' |'SUB'|'EST'|'TAB'|'COV'|'SUB'|'MOD'|'SIZ'|'PRO'|'DAT'|'MSF') [A-Z]*;
+OPTION_BLOCK_NAME :	'$' ('INP' |'SUB'|'EST'|'TAB'|'COV'|'SUB'|'MOD'|'SIZ'|'PRO'|'DAT'|'MSF'|'ABB') [A-Z]*;
 
-STMT_BLOCK_NAME: '$' ('PK'|'DES'|('ERR' [A-Z]*));
+STMT_BLOCK_NAME: '$' ('PK'|'DES'|'PRE'[A-Z]*|('ERR' [A-Z]*));
 
 COMP:   'COMP';
 
@@ -65,6 +67,10 @@ A_0:    'A_0';
 DADT:   'DADT';
 
 //BLOCK_NAME :	'$' ID;
+
+//SCIENTIFIC: NUMBER+ 'E' (MINUS|PLUS)? NUMBER;
+
+OPTION_KWD: [-] ('0'..'9') ID;
 
 ID:  (('a'..'z')|('A'..'Z')) (('a'..'z')|('A'..'Z')|('0'..'9')|'_')*;
 
@@ -76,7 +82,12 @@ STRING:		'"' (~('"'|'\n'|'\r'))* '"';
 
 INT : ('0'..'9')+;
 
-REAL: INT '.' INT ('E' '-'? (((INT '.')? INT))|(INT '.' INT?))? ;
+REAL: INT? '.' INT ('E' '-'? (((INT '.')? INT))|(INT '.' INT?))? ;
+
+//REAL: (('0' .. '9') +)? '.' ('0' .. '9')+
+//        ;
+
+fragment NUMBER: INT|REAL;
 
 WS:			(' '|'\t') -> skip;
 

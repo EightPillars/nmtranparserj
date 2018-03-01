@@ -16,12 +16,13 @@ nmModel :
 
 //nmDataSource:   DATA_BLOCK STRING nmOption* EOL+;
 
-nmOption:	(ID (ASSIGN expression)?
-            | ID '(' expression ')'
+nmOption:	(optionKwd (ASSIGN expression)?
+            | optionKwd '(' expression ')'
 			| stringLiteral
 			| nmCompDefn) EOL*
 ;
 
+optionKwd: OPTION_KWD | ID ;
 
 nmOptionBlock:
 			OPTION_BLOCK_NAME EOL* nmOption* EOL+
@@ -33,7 +34,7 @@ nmStmtBlock:
             ;
 
 nmStatement:
-			(nmEquation | nmCondStmt|nmOdeInit|nmOdeDefn) EOL+ //|nmLimit//|nmOdeInit | nmOdeDefn ||
+			(nmEquation | nmCondStmt|nmOdeInit|nmOdeDefn|exitStmt) EOL+ //|nmLimit//|nmOdeInit | nmOdeDefn ||
 ;
 
 nmThetaBlock: THETA_BLOCK EOL* nmLimit*;
@@ -43,6 +44,9 @@ nmMatrixBlock: MATRIX_BLOCK EOL* nmOption* nmMatrix*;
 nmEquation:
 	 ID (ASSIGN expression)?
 ;
+
+exitStmt : ID integerLiteral integerLiteral;
+
 
 nmOdeInit:
 	 A_0  '(' integerLiteral ')' ASSIGN expression
@@ -54,8 +58,8 @@ nmOdeDefn:
 
 nmLimit :
 	 (('(' expression ((','? expression ((','? expression)|',')? )|',')? ')' ID?)
-			|  '(' (expression  ID) ')'
-			|  (expression  ID) ) EOL+
+			|  '(' (expression  ID?) ')'
+			|  (expression  ID?) ) EOL+
 ;
 
 nmMatrix:
@@ -126,7 +130,8 @@ primaryexpression :
 ;
 
 nmCondStmt :
-	IF '(' expression ')' THEN EOL+ nmStatement+ (ELSE EOL+ nmStatement+ )? ENDIF
+	IF '(' expression ')' THEN EOL+ nmStatement+ (ELSE EOL+ nmStatement+ )? ((END IF)|ENDIF)
+	| IF '(' expression ')' nmStatement+ (ELSE EOL+ nmStatement+ )?
 ;
 
 parenthesis :  '(' expression ')';
