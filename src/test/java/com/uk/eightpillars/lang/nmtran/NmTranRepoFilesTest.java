@@ -26,6 +26,9 @@ import static junit.framework.TestCase.assertTrue;
 @RunWith(Parameterized.class)
 public class NmTranRepoFilesTest {
 
+    // false if you want to see errors from failing tests
+    private static final boolean SUPPRESS_ERROR_MSGS = true;
+
     private static String FAILING_FILES[] = {
             "Executable_real_NONMEM_diabetes_progression_ORG.ctl",
             "Simulate_P241.ctl",
@@ -75,12 +78,12 @@ public class NmTranRepoFilesTest {
             TestErrorListener errorListener = new TestErrorListener();
             NmtranLexer lexer = new NmtranLexer(upper);
             // suppress error messages from default error handlers
-//            lexer.removeErrorListeners();
+            if(SUPPRESS_ERROR_MSGS) lexer.removeErrorListeners();
             // add out test handler to count errors
             lexer.addErrorListener(errorListener);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             NmtranParser parser = new NmtranParser(tokens);
-//            parser.removeErrorListeners();
+              if(SUPPRESS_ERROR_MSGS) parser.removeErrorListeners();
             parser.addErrorListener(errorListener);
             ParseTree tree = parser.nmModel();
             ParseTreeWalker walker = new ParseTreeWalker();
