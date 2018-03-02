@@ -33,8 +33,18 @@ public class NmtranPreprocessorTest {
                 { "Single Option", "IGNORE=@", "IGNORE=\"@\"\n" },
                 { "MultiOptions", "IGNORE=@ FILE=akdhs.shs ", "IGNORE=\"@\" FILE=\"akdhs.shs\" \n" },
                 {  "Data Block One Option", "$DATA ads.fh IGNORE=@", "$DATA \"ads.fh\" IGNORE=\"@\"\n" },
+                {  "Quoted Data Block One Option", "$DATA \"ads.fh\" IGNORE=@", "$DATA \"ads.fh\" IGNORE=\"@\"\n" },
+
+
                 { "Data Block multi options", "$DATA ads.fh IGNORE=@ FILE=akdhs.shs ", "$DATA \"ads.fh\" IGNORE=\"@\" FILE=\"akdhs.shs\" \n" },
                 { "Problem Block", "$PROBLEM ads.fh kdjs sshs dhdh  ", "$PROBLEM \"ads.fh kdjs sshs dhdh\"  \n" },
+                { "Quoted Problem Block", "$PROBLEM \"ads.fh kdjs sshs dhdh\"  ", "$PROBLEM \"ads.fh kdjs sshs dhdh\"  \n" },
+                { "Data block split into 2 lines",
+                        "$DATA drugX_PO_2occ_dataMDL_v1.csv\n"
+                                + "IGNORE=@\n",
+                        "$DATA \"drugX_PO_2occ_dataMDL_v1.csv\"\n"
+                                + "IGNORE=\"@\"\n",
+                },
                 { "Multiple lines",
                         "$PROBLEM ads.fh kdjs sshs dhdh  \n"
                         + "$DATA ads.fh IGNORE=@ FILE=akdhs.shs \n"

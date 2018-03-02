@@ -14,6 +14,12 @@ POW: '^'|'**';
 
 EOL: NEWLINE;
 
+DO: 'DO';
+
+WHILE: 'WHILE';
+
+CALL: 'CALL';
+
 IF: 'IF';
 
 THEN: 'THEN';
@@ -56,11 +62,11 @@ MATRIX_BLOCK: '$' ('OMEGA'|'SIGMA');
 
 //FILE: 'FILE' -> pushMode(RAW_STRINGS);
 
-OPTION_BLOCK_NAME :	'$' ('INP' |'SUB'|'EST'|'TAB'|'COV'|'SUB'|'MOD'|'SIZ'|'PRO'|'DAT'|'MSF'|'ABB') [A-Z]*;
+OPTION_BLOCK_NAME :	'$' ('INP' |'SUB'|'EST'|'TAB'|'COV'|'SUB'|'MOD'|'SIZ'|'PRO'|'DAT'|'MSF'|'ABB'|'SIM'|'CON') [A-Z]*;
 
-STMT_BLOCK_NAME: '$' ('PK'|'DES'|'PRE'[A-Z]*|('ERR' [A-Z]*));
+STMT_BLOCK_NAME: '$' ('PK'|'DES'|'PRE'[A-Z]*|('ERR' [A-Z]*)|'MIX' [A-Z]*);
 
-COMP:   'COMP';
+//COMP:   'COMP';
 
 A_0:    'A_0';
 
@@ -76,13 +82,15 @@ ID:  (('a'..'z')|('A'..'Z')) (('a'..'z')|('A'..'Z')|('0'..'9')|'_')*;
 
 //IGNORE_CHAR: '£'|'#'|'@';
 
+STR_COMMENT: '"' (~('"'|'\n'|'\r'))* -> skip;
+
 SL_COMMENT:	';' ~('\n'|'\r')* -> skip ;
 
 STRING:		'"' (~('"'|'\n'|'\r'))* '"';
 
 INT : ('0'..'9')+;
 
-REAL: INT? '.' INT ('E' '-'? (((INT '.')? INT))|(INT '.' INT?))? ;
+REAL: (INT? '.' INT ('E' '-'? (((INT '.')? INT))|(INT '.' INT?))?) ;
 
 //REAL: (('0' .. '9') +)? '.' ('0' .. '9')+
 //        ;

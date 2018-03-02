@@ -22,7 +22,7 @@ public class NmtranPreprocessor {
 //        optionPattern = Pattern.compile(buildOptionKwdPattern());
         problemPattern = compPat("(\\$PRO\\w*\\s+)(.+\\b)(\\s*)$");
 //        dataPattern = Pattern.compile("(\\$DATA\\s+)(\\S+)");
-        dataPattern = compPat(buildPattern("(\\$(?:", DATA_LIKE_BLOCKS, ")\\s+)(\\S+)"));
+        dataPattern = compPat(buildPattern("(\\$(?:", DATA_LIKE_BLOCKS, ")\\s+)\"?([^\" \\t\\n\\r]+)\"?"));
     }
 
     private static Pattern compPat(String pattern){
@@ -41,22 +41,8 @@ public class NmtranPreprocessor {
         return buf.toString();
     }
 
-//    private static String buildOptionKwdPattern(){
-//        StringBuilder buf = new StringBuilder("((?:");
-//        for(int i = 0; i < OPTION_KWDS.length; i++){
-//            buf.append(OPTION_KWDS[i]);
-//            if(i < OPTION_KWDS.length - 1){
-//                buf.append("|");
-//            }
-//        }
-//        buf.append(")\\s*=\\s*)(\\S+)");
-//        return buf.toString();
-//    }
-
     public void preprocess(BufferedReader bin, BufferedWriter bout) {
         try {
-//            BufferedReader bin = new BufferedReader(new InputStreamReader(in));
-//            this.bout = new BufferedWriter(new OutputStreamWriter(out));
             for(String buf = bin.readLine(); buf != null; buf = bin.readLine()){
                 bout.write(processLine(processLine(processLine(buf, optionPattern, "$1\"$2\""),
                                                     problemPattern, "$1\"$2\"$3"),
