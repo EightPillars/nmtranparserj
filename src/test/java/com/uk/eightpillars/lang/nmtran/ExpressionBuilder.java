@@ -239,7 +239,7 @@ public class ExpressionBuilder implements NmtranParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterOrexpression(NmtranParser.OrexpressionContext ctx) {
-        if(ctx.OR(0) != null){
+        if(ctx.OR() != null){
             treeRep.append("(");
         }
     }
@@ -249,49 +249,49 @@ public class ExpressionBuilder implements NmtranParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitOrexpression(NmtranParser.OrexpressionContext ctx) {
-        if(ctx.OR(0) != null){
-            treeRep.append(ctx.OR(0));
+        if(ctx.OR() != null){
+            treeRep.append(ctx.OR());
             treeRep.append(")");
         }
     }
 
 	@Override public void enterAndexpression(NmtranParser.AndexpressionContext ctx) {
-        if(ctx.AND(0) != null){
+        if(ctx.AND() != null){
             treeRep.append("(");
         }
     }
 
 	@Override public void exitAndexpression(NmtranParser.AndexpressionContext ctx) {
-        if(ctx.AND(0) != null){
-            treeRep.append(ctx.AND(0));
+        if(ctx.AND() != null){
+            treeRep.append(ctx.AND());
             treeRep.append(")");
         }
     }
 
 	@Override public void enterEqualityexpression(NmtranParser.EqualityexpressionContext ctx) {
-        if(ctx.EQ(0) != null || ctx.NE(0) != null){
+        if(ctx.EQ() != null || ctx.NE() != null){
             treeRep.append("(");
         }
     }
 	@Override public void exitEqualityexpression(NmtranParser.EqualityexpressionContext ctx) {
-        if(ctx.EQ(0) != null || ctx.NE(0) != null){
-            treeRep.append(ctx.EQ(0) != null ? ctx.EQ(0) : ctx.NE(0));
+        if(ctx.EQ() != null || ctx.NE() != null){
+            treeRep.append(ctx.EQ() != null ? ctx.EQ() : ctx.NE());
             treeRep.append(")");
         }
     }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterRelationalexpression(NmtranParser.RelationalexpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitRelationalexpression(NmtranParser.RelationalexpressionContext ctx) { }
+	@Override public void enterRelationalexpression(NmtranParser.RelationalexpressionContext ctx) {
+		if(ctx.GE() != null || ctx.GT() != null || ctx.LE() != null || ctx.LT() != null){
+			treeRep.append("(");
+		}
+	}
+	@Override public void exitRelationalexpression(NmtranParser.RelationalexpressionContext ctx) {
+		if(ctx.GE() != null || ctx.GT() != null || ctx.LE() != null || ctx.LT() != null){
+			treeRep.append(ctx.GE() != null ? ctx.GE() : ctx.GT() != null ? ctx.GT()
+					: ctx.LE() != null ? ctx.LE() : ctx.LT());
+			treeRep.append(")");
+		}
+	}
 	/**
 	 * {@inheritDoc}
 	 *
@@ -306,33 +306,33 @@ public class ExpressionBuilder implements NmtranParserListener {
 	@Override public void exitRangeExpression(NmtranParser.RangeExpressionContext ctx) { }
 
 	@Override public void enterAdditiveexpression(NmtranParser.AdditiveexpressionContext ctx) {
-        if(ctx.MINUS(0) != null || ctx.PLUS(0) != null){
+        if(ctx.MINUS() != null || ctx.PLUS() != null){
             treeRep.append("(");
         }
 
     }
 
 	@Override public void exitAdditiveexpression(NmtranParser.AdditiveexpressionContext ctx) {
-        if(ctx.MINUS(0) != null || ctx.PLUS(0) != null){
-            treeRep.append(ctx.MINUS(0) != null ? ctx.MINUS(0) : ctx.PLUS(0));
+        if(ctx.MINUS() != null || ctx.PLUS() != null){
+            treeRep.append(ctx.MINUS() != null ? ctx.MINUS() : ctx.PLUS());
             treeRep.append(")");
         }
     }
 
 	@Override public void enterMultiplicativeexpression(NmtranParser.MultiplicativeexpressionContext ctx) {
-        if(ctx.MUL(0) != null || ctx.DIV(0) != null){
+        if(ctx.MUL() != null || ctx.DIV() != null){
             treeRep.append("(");
         }
     }
 	@Override public void exitMultiplicativeexpression(NmtranParser.MultiplicativeexpressionContext ctx) {
-        if(ctx.MUL(0) != null || ctx.DIV(0) != null){
-            treeRep.append(ctx.MUL(0) != null ? ctx.MUL(0) : ctx.DIV(0));
+        if(ctx.MUL() != null || ctx.DIV() != null){
+            treeRep.append(ctx.MUL() != null ? ctx.MUL() : ctx.DIV());
             treeRep.append(")");
         }
     }
 
 	@Override public void enterPowerexpression(NmtranParser.PowerexpressionContext ctx) {
-	    if(ctx.POW(0) != null){
+	    if(ctx.POW() != null){
 	        treeRep.append("(");
         }
     }
@@ -343,8 +343,8 @@ public class ExpressionBuilder implements NmtranParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPowerexpression(NmtranParser.PowerexpressionContext ctx) {
-        if(ctx.POW(0) != null){
-            treeRep.append(ctx.POW(0));
+        if(ctx.POW() != null){
+            treeRep.append(ctx.POW());
             treeRep.append(")");
         }
 
@@ -499,10 +499,16 @@ public class ExpressionBuilder implements NmtranParserListener {
 
 	@Override
 	public void exitRealLiteral(NmtranParser.RealLiteralContext ctx) {
-		if(ctx.REAL() != null) {
-			treeRep.append(ctx.REAL().getText());
+		if(ctx.REAL() != null || ctx.SCIENTIFIC() != null) {
+			treeRep.append(ctx.REAL() != null ? ctx.REAL().getText() : ctx.SCIENTIFIC().getText());
 			treeRep.append(" ");
 		}
+		else if(ctx.INT() != null) {
+			treeRep.append(ctx.INT().getText());
+			treeRep.append(".0");
+			treeRep.append(" ");
+		}
+
 	}
 
 	/**

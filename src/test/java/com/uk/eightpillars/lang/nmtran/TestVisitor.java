@@ -61,15 +61,15 @@ public class TestVisitor extends NmtranParserBaseListener {
     @Override
     public void enterMultiplicativeexpression(NmtranParser.MultiplicativeexpressionContext ctx){
 //        buf.append(ctx..getText());
-        appendToken(ctx.MUL(0));
-        appendToken(ctx.DIV(0));
+        appendToken(ctx.MUL());
+        appendToken(ctx.DIV());
     }
 
     @Override
     public void enterAdditiveexpression(NmtranParser.AdditiveexpressionContext ctx){
 //        buf.append(ctx..getText());
-        appendToken(ctx.MINUS(0));
-        appendToken(ctx.PLUS(0));
+        appendToken(ctx.MINUS());
+        appendToken(ctx.PLUS());
     }
 
 //    @Override

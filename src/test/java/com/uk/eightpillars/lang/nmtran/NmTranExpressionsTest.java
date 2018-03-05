@@ -30,11 +30,16 @@ public class NmTranExpressionsTest {
                 { "a", "(a )" },
                 { "23", "(23 )" },
                 { "23.2", "(23.2 )" },
-                { "23.", "(23. )" },
+                { "23.", "(23.0 )" },
+                { "23.0e2", "(23.0e2 )" },
+                { "-3.0e2.34", "((3.0e2.34 -))" },
+//                { "e2.0", "(-3.0e2.0 )", Boolean.FALSE },
+                { "23.0e2", "(23.0e2 )" },
                 { "0.0", "(0.0 )" },
                 { ".0", "(.0 )" },
                 { ".23", "(.23 )" },
                 { "-23.0", "((23.0 -))" },
+                { "+1.0E-5", "((1.0E-5 +))" },
                 { "23.0 + 10", "((23.0 10 +))" },
                 { "3.0 - 14", "((3.0 14 -))" },
                 { "23.0 * 34", "((23.0 34 *))" },
@@ -47,14 +52,17 @@ public class NmTranExpressionsTest {
                 { "2.0.EQ.4 + -2", "((2.0 (4 (2 -)+).EQ.))" },
                 { "2.0==4 + -2", "((2.0 (4 (2 -)+)==))" },
                 { "2.0.NE.4 + -2", "((2.0 (4 (2 -)+).NE.))" },
-                { "1 AND 0", "((1 0 AND))", Boolean.FALSE},
+//                { "1 AND 0", "((1 0 AND))", Boolean.FALSE},
                 { "1.AND.0", "((1 0 .AND.))" },
+                { "1:0", "((1 0 :))" },
                 { "1.OR.0", "((1 0 .OR.))" },
-                { "2.0 * a / (4 + ff23s)", "(((2.0 a *)(4 ff23s +)/))" },
-                { "2.0 * 3 / (4 + 23)", "(((2.0 3 *)(4 23 +)/))" },
+                { "2.0 * a / (4 + ff23s)", "(((2.0 a *)((4 ff23s +))/))" },
+                { "2.0 * 3 / (4 + 23)", "(((2.0 3 *)((4 23 +))/))" },
+                { "2.0 * 3 / EXP(4 + 23)", "(((2.0 3 *)(((4 23 +))EXP)/))" },
+                { "LOG(23,2)", "(((23 )(2 )LOG))" },
                 {
                     "SWITCH1_DES.LT.0.AND.SWITCH2_DES.LT.0.AND.SWITCH2_DES.GE.-(DELTA_VMAX)",
-                    "(((((SWITCH1_DES 0 <) (SWITCH2_DES 0 <) &&) (SWITCH2_DES (DELTA_VMAX -) >) &&))"
+                    "((((SWITCH1_DES 0 .LT.)(SWITCH2_DES 0 .LT.).AND.)(SWITCH2_DES ((DELTA_VMAX )-).GE.).AND.))"
                 }
         };
         List<Object[]> retVal = new ArrayList<Object[]>();
@@ -99,12 +107,15 @@ public class NmTranExpressionsTest {
 //            parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
         ParseTree tree = parser.expression();
-        ParseTreeWalker walker = new ParseTreeWalker();
-        ExpressionBuilder eb = new ExpressionBuilder();
-        walker.walk(eb, tree);
+//        ParseTreeWalker walker = new ParseTreeWalker();
+//        ExpressionBuilder eb = new ExpressionBuilder();
+//        walker.walk(eb, tree);
+        NmtranParserVisitor<String> visitor = new ExpressionVisitor();
+        String actualResult = visitor.visit(tree);
         assertEquals(expectValid, !errorListener.isErrorDetected());
         if(expectValid) {
-            assertEquals(expectedExpr, eb.getExpressionTree());
+            assertEquals(expectedExpr, actualResult);
+//            assertEquals(expectedExpr, eb.getExpressionTree());
         }
     }
 

@@ -88,7 +88,7 @@ SL_COMMENT:	';' ~('\n'|'\r')* -> skip ;
 
 STRING:		'"' (~('"'|'\n'|'\r'))* '"';
 
-SCIENTIFIC: (PLUS|MINUS)? NUMBER SCIENTIFIC_E (PLUS|MINUS)? NUMBER
+SCIENTIFIC: /*(PLUS|MINUS)?*/ NUMBER SCIENTIFIC_E (PLUS|MINUS)? NUMBER
                     ;
 
 //INT : ('0'..'9')+;
@@ -96,6 +96,8 @@ SCIENTIFIC: (PLUS|MINUS)? NUMBER SCIENTIFIC_E (PLUS|MINUS)? NUMBER
 INT: DIGIT+;
 
 REAL: (DIGIT* '.' DIGIT+) ;
+
+DOT: '.';
 
 //REAL: (('0' .. '9') +)? '.' ('0' .. '9')+
 //        ;

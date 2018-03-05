@@ -81,39 +81,48 @@ nmCompDefn :
 expression: orexpression
 ;
 
-orexpression :
-	andexpression ( OR andexpression)*;
+orexpression
+        :   andexpression
+	    |   orexpression  OR andexpression
+	    ;
 
 
-andexpression :
-	equalityexpression ( AND equalityexpression)*;
+andexpression
+        :   equalityexpression
+        |   andexpression AND equalityexpression
+        ;
 
 
-equalityexpression :
-	relationalexpression ( (EQ | NE)
-	relationalexpression)*;
+equalityexpression
+        :   relationalexpression
+        |   equalityexpression (EQ | NE) relationalexpression
+        ;
 
 
-relationalexpression :
-	rangeExpression
-	(
-	 (GE | LE | GT | LT) rangeExpression)*;
+relationalexpression
+        :   rangeExpression
+        |   relationalexpression (GE | LE | GT | LT) rangeExpression
+        ;
 
 
-rangeExpression:  additiveexpression (COLON additiveexpression)*
-                ;
+rangeExpression
+        :   additiveexpression
+        |   rangeExpression COLON additiveexpression
+        ;
 
-additiveexpression :
-					multiplicativeexpression ( (PLUS|MINUS) multiplicativeexpression)*
-;
+additiveexpression
+        :   multiplicativeexpression
+        |   additiveexpression (PLUS|MINUS) multiplicativeexpression
+        ;
 
-multiplicativeexpression :
-					powerexpression ((MUL|DIV) powerexpression)*
-;
+multiplicativeexpression
+        :   powerexpression
+        |   multiplicativeexpression (MUL|DIV) powerexpression
+        ;
 
-
-powerexpression :
-					unaryexpression (POW unaryexpression)*
+powerexpression
+        :   unaryexpression
+        |   powerexpression POW unaryexpression
 ;
 
 unaryexpression :
@@ -176,7 +185,7 @@ integerLiteral:	INT
 ;
 
 
-realLiteral: SCIENTIFIC | REAL
+realLiteral: SCIENTIFIC | REAL | (INT ('.')?)
 
 ;
 

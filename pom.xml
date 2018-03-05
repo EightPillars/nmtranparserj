@@ -19,6 +19,7 @@
         <junit.jupiter.version>5.1.0</junit.jupiter.version>
         <junit.vintage.version>5.1.0</junit.vintage.version>
         <junit.platform.version>1.1.0</junit.platform.version>
+        <antlr4.visitor>true</antlr4.visitor>
     </properties>
 
     <dependencies>
@@ -86,6 +87,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <!--configuration>
+                    <visitor>true</visitor>
+                    <listener>true</listener>
+                </configuration-->
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>

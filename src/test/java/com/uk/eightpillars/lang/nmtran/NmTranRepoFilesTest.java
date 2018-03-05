@@ -27,13 +27,14 @@ import static junit.framework.TestCase.assertTrue;
 public class NmTranRepoFilesTest {
 
     // false if you want to see errors from failing tests
-    private static final boolean SUPPRESS_ERROR_MSGS = false;
+    private static final boolean SUPPRESS_ERROR_MSGS = true;
 
     private static String FAILING_FILES[] = {
-//            "Executable_real_NONMEM_diabetes_progression_ORG.ctl",
-//            "Simulate_P241.ctl",
+            "Executable_real_NONMEM_diabetes_progression_ORG.ctl",
+            "Simulate_P241.ctl",
 //            "theopd.ctl",
-//            "Executable_runEV2_105.ctl",
+            "Executable_runEV2_105.ctl",
+            "Executable_ddmore_final_run249.ctl",
 //            "theopd_est.ctl"
     };
 
