@@ -117,7 +117,7 @@ powerexpression :
 ;
 
 unaryexpression :
-	(('-'|'+'))? primaryexpression
+	((MINUS|PLUS))? primaryexpression
 ;
 
 primaryexpression :
@@ -130,7 +130,7 @@ primaryexpression :
 //		EpsLiteral|
 //		ThetaLiteral|
 		symbolReference|
-		compAssign |
+//		compAssign |
 //		odeRef|
 		parenthesis //|
 //		SpecialVars
@@ -176,6 +176,11 @@ integerLiteral:	INT
 ;
 
 
-realLiteral: REAL|INT
+realLiteral: SCIENTIFIC | REAL
 
 ;
+
+//scientificNotation: numberLiteral SCIENTIFIC_E  numberLiteral
+//                    ;
+
+//numberLiteral: (PLUS|MINUS)? (INT|REAL);

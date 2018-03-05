@@ -27,14 +27,14 @@ import static junit.framework.TestCase.assertTrue;
 public class NmTranRepoFilesTest {
 
     // false if you want to see errors from failing tests
-    private static final boolean SUPPRESS_ERROR_MSGS = true;
+    private static final boolean SUPPRESS_ERROR_MSGS = false;
 
     private static String FAILING_FILES[] = {
-            "Executable_real_NONMEM_diabetes_progression_ORG.ctl",
-            "Simulate_P241.ctl",
-            "theopd.ctl",
-            "Executable_runEV2_105.ctl",
-            "theopd_est.ctl"
+//            "Executable_real_NONMEM_diabetes_progression_ORG.ctl",
+//            "Simulate_P241.ctl",
+//            "theopd.ctl",
+//            "Executable_runEV2_105.ctl",
+//            "theopd_est.ctl"
     };
 
     @Parameters(name = "{index}: {0}")
@@ -49,7 +49,7 @@ public class NmTranRepoFilesTest {
             for(File f : files){
                 Boolean valid = Boolean.TRUE;
                 if(failingFiles.contains(f.getName())) valid = Boolean.FALSE;
-                retVal.add(new Object[] { f.getPath(), valid });
+                retVal.add(new Object[] { f.getName(), f.getPath(), valid });
             }
             return retVal;
         } catch (URISyntaxException e) {
@@ -58,9 +58,12 @@ public class NmTranRepoFilesTest {
     }
 
     @Parameterized.Parameter(0)
-    public String nmTranFile;
+    public String testName;
 
     @Parameterized.Parameter(1)
+    public String nmTranFile;
+
+    @Parameterized.Parameter(2)
     public Boolean expectValid;
 
     @Test

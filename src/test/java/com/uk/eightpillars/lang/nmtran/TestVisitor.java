@@ -89,7 +89,7 @@ public class TestVisitor extends NmtranParserBaseListener {
     @Override
     public void enterRealLiteral(NmtranParser.RealLiteralContext ctx){
         appendToken(ctx.REAL());
-        appendToken(ctx.INT());
+//        appendToken(ctx.INT());
     }
 
     @Override

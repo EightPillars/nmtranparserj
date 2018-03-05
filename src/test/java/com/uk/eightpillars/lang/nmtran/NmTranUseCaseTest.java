@@ -37,7 +37,7 @@ public class NmTranUseCaseTest {
             Collection<File> files = FileUtils.listFiles(ucDir.toFile(), new WildcardFileFilter("*.ctl"), null);
             List<Object[]> retVal = new ArrayList<Object[]>();
             for(File f : files){
-                retVal.add(new Object[] { f.getPath(), Boolean.TRUE });
+                retVal.add(new Object[] { f.getName(), f.getPath(), Boolean.TRUE });
             }
             return retVal;
         } catch (URISyntaxException e) {
@@ -52,9 +52,12 @@ public class NmTranUseCaseTest {
     }
 
     @Parameterized.Parameter(0)
-    public String nmTranFile;
+    public String testName;
 
     @Parameterized.Parameter(1)
+    public String nmTranFile;
+
+    @Parameterized.Parameter(2)
     public Boolean expectValid;
 
     @Test

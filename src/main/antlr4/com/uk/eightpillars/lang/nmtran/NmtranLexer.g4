@@ -88,18 +88,29 @@ SL_COMMENT:	';' ~('\n'|'\r')* -> skip ;
 
 STRING:		'"' (~('"'|'\n'|'\r'))* '"';
 
-INT : ('0'..'9')+;
+SCIENTIFIC: (PLUS|MINUS)? NUMBER SCIENTIFIC_E (PLUS|MINUS)? NUMBER
+                    ;
 
-REAL: (INT? '.' INT ('E' '-'? (((INT '.')? INT))|(INT '.' INT?))?) ;
+//INT : ('0'..'9')+;
+
+INT: DIGIT+;
+
+REAL: (DIGIT* '.' DIGIT+) ;
 
 //REAL: (('0' .. '9') +)? '.' ('0' .. '9')+
 //        ;
 
-fragment NUMBER: INT|REAL;
 
 WS:			(' '|'\t') -> skip;
 
 NEWLINE:		('\r'? '\n');
+
+fragment NUMBER: INT|REAL;
+
+fragment DIGIT: [0-9];
+
+fragment SCIENTIFIC_E: 'E';
+
 
 
 //mode RAW_STRINGS;
