@@ -22,23 +22,22 @@ import java.util.*;
 public class MdlModelGenerationVisitor extends AbstractParseTreeVisitor<String> implements NmtranParserVisitor<String> {
 
     private STGroup stg;
-    private final Map<String, List<ST>> eqns;
-    private List<ST> currentEqns;
-    private String currentBlock;
+    private final Map<String, BlockTemplates> blkTmplts;
+    private BlockTemplates currentBlock;
 
 	public MdlModelGenerationVisitor(){
 		URL stgIn = this.getClass().getResource("/mdlModel.stg");
         stg = new STGroupFile(stgIn.getPath());
-        this.eqns = new HashMap<String, List<ST>>();
-        this.currentEqns = new ArrayList<ST>();
+        this.blkTmplts = new HashMap<String, BlockTemplates>();
         this.currentBlock = null;
 	}
 
+
     public String writeMdlBlock(){
 	    ST mdlBlk = stg.getInstanceOf("mdlObj");
-	    List<ST> eqnTmpts = this.eqns.containsKey("$PK") ? this.eqns.get("$PK") : Collections.emptyList();
-        for(ST tmp: eqnTmpts){
-            mdlBlk.add("modelStatements", tmp.render());
+	    if(this.blkTmplts.containsKey("$PK")){
+            BlockTemplates tmp = this.blkTmplts.get("$PK");
+            tmp.getEqns().forEach((t) -> mdlBlk.add("modelStatements", t.render()));
         }
         mdlBlk.add("mdlId", "mdl1");
         return mdlBlk.render();
@@ -46,14 +45,50 @@ public class MdlModelGenerationVisitor extends AbstractParseTreeVisitor<String> 
 
 
 	private void newBlock(String blkName){
-	    String oldBlock = currentBlock;
-	    eqns.put(oldBlock, currentEqns);
-        currentEqns = new ArrayList<ST>();
-	    this.currentBlock = blkName;
+	    if(currentBlock != null) {
+            BlockTemplates oldBlock = currentBlock;
+            blkTmplts.put(oldBlock.getBlkName(), oldBlock);
+        }
+	    this.currentBlock = new BlockTemplates(blkName);
     }
 
     private void addEquation(ST eqnST){
-	    this.currentEqns.add(eqnST);
+	    this.currentBlock.addEqns(eqnST);
+    }
+
+
+    private void addTheta(int posn, ST thetaST){
+	    this.currentBlock.addTheta(posn, thetaST);
+    }
+
+    private ST createFunctionTmpl(TerminalNode id, List<NmtranParser.ExpressionContext> args){
+        ST fc = this.stg.getInstanceOf("functionCall");
+        fc.add("name", id.getText().toLowerCase());
+        List<String> argList = new ArrayList<String>();
+        for(NmtranParser.ExpressionContext e : args){
+            argList.add(visit(e));
+        }
+        fc.add("args", argList);
+        return fc;
+    }
+
+    private ST createThetaTmpl(TerminalNode id, List<NmtranParser.ExpressionContext> args){
+	    return createParamFuncRefTmpl("theta", id, args);
+    }
+
+    private ST createEtaTmpl(TerminalNode id, List<NmtranParser.ExpressionContext> args){
+        return createParamFuncRefTmpl("eta", id, args);
+    }
+
+
+    private ST createParamFuncRefTmpl(String paramName, TerminalNode id, List<NmtranParser.ExpressionContext> args){
+	    if(args.size() > 1) throw new IllegalStateException("theta can't have more then one argument");
+
+        ST fc = this.stg.getInstanceOf("paramFuncRef");
+        String thetaPosn = visit(args.get(0));
+        fc.add("paramName", paramName);
+        fc.add("posn", thetaPosn);
+        return fc;
     }
 
 
@@ -440,13 +475,16 @@ public class MdlModelGenerationVisitor extends AbstractParseTreeVisitor<String> 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public String visitFunctionCall(NmtranParser.FunctionCallContext ctx) {
-	    ST fc = this.stg.getInstanceOf("functionCall");
-	    fc.add("name", ctx.ID().getText().toLowerCase());
-	    List<String> argList = new ArrayList<String>();
-	    for(NmtranParser.ExpressionContext e : ctx.expression()){
-	        argList.add(visit(e));
+        ST fc = null;
+        if(ctx.ID().getText().equalsIgnoreCase("theta")){
+            fc = createThetaTmpl(ctx.ID(), ctx.expression());
         }
-        fc.add("args", argList);
+        else if(ctx.ID().getText().equalsIgnoreCase("eta")){
+            fc = createEtaTmpl(ctx.ID(), ctx.expression());
+        }
+        else{
+            fc = createFunctionTmpl(ctx.ID(), ctx.expression());
+        }
         return fc.render();
 	}
 	/**

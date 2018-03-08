@@ -21,3 +21,5 @@ paren(expr) ::= "(<expr>)"
 functionCall(name, args) ::= "<name>(<args; separator=\", \">)"
 
 equation(lhs, param, rhs) ::= "<lhs><if(param)>(<param>)<endif> = <rhs>"
+
+paramFuncRef(paramName, posn) ::= "<paramName>_<posn>"
