@@ -1,0 +1,23 @@
+
+// assignment
+assign(name, rhs) ::= "<name> = rhs;"
+
+mdlObj(mdlId, modelStatements) ::= <<
+mdlId = mdlObj {
+    STRUCTURAL_MODEL {
+        <modelStatements; separator="\n">
+    }
+}
+>>
+
+rangeExpr(op1, op2) ::= "<op1>:<op2>"
+
+binOpExpr(op1, op, op2) ::= "<op1> <op> <op2>"
+
+uniOpExpr(oper, opnd) ::= "<oper><opnd>"
+
+paren(expr) ::= "(<expr>)"
+
+functionCall(name, args) ::= "<name>(<args; separator=\", \">)"
+
+equation(lhs, param, rhs) ::= "<lhs><if(param)>(<param>)<endif> = <rhs>"
